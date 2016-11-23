@@ -1,0 +1,16 @@
+syntax="proto2";
+
+// metadat about a block signature
+message Signature {
+  required int64 timestamp = 1; // timestamp in seconds
+  required bytes contentHash = 2; // sha512 hash of content. No salt
+  required bytes signatureA = 3;
+  required bytes signatureB = 4;
+}
+
+// Metadata about a block
+message Block {
+  optional Signature parent    = 1;
+  required Signature signature = 2;
+  required bytes  payload      = 3;   // the data this block describes.
+}
