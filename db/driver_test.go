@@ -2,6 +2,7 @@ package db
 
 import (
 	"bytes"
+	"context"
 	"crypto/ecdsa"
 	"crypto/elliptic"
 	"crypto/rand"
@@ -47,7 +48,7 @@ func TestDriversWrite(t *testing.T) {
 
 			x, xErr := d.GetBlockByContentHash(b.Signature.GetContentHash())
 			if xErr != nil {
-				t.Error(err)
+				t.Error(xErr)
 			}
 
 			if !bytes.Equal(x.GetPayload(), b.GetPayload()) {
@@ -74,16 +75,21 @@ func TestDriversRead(t *testing.T) {
 				if err != nil {
 					t.Error(err)
 				}
-
 			}
 
-			x, xErr := d.GetBlockByContentHash(b.Signature.GetContentHash())
-			if xErr != nil {
-				t.Error(xErr)
+			var count = 0
+			out, err := d.StreamBlocks(context.Background())
+			for b = range out {
+				count++
+			}
+			if count != 100 {
+				t.Fail()
 			}
 
-			if !bytes.Equal(x.GetPayload(), b.GetPayload()) {
-				t.Error(*x, *b)
+			verr := <-err
+
+			if verr != nil {
+				t.Error(verr)
 			}
 
 			close()
