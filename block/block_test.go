@@ -2,13 +2,11 @@ package block
 
 import (
 	"crypto/ecdsa"
-	"crypto/elliptic"
-	"crypto/rand"
 	"testing"
 )
 
 func newKey() *ecdsa.PrivateKey {
-	k, _ := ecdsa.GenerateKey(elliptic.P521(), rand.Reader)
+	k, _ := GenerateKey()
 	return k
 }
 
