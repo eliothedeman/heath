@@ -14,3 +14,9 @@ message Block {
   required Signature signature = 2;
   required bytes  payload      = 3;   // the data this block describes.
 }
+
+message PrivateKey {
+    required bytes X = 1;
+    required bytes Y = 2;
+    required bytes D = 3;
+}
