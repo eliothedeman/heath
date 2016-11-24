@@ -34,7 +34,7 @@ func newTestBlock(s *block.Signature, priv *ecdsa.PrivateKey) *block.Block {
 
 func TestDriversWrite(t *testing.T) {
 	for name, df := range drivers {
-		t.Run(fmt.Sprintf("Driver: %s", name), func(t *testing.T) {
+		t.Run(fmt.Sprintf("Driver:%s", name), func(t *testing.T) {
 			f, close := newTestFile(name)
 			d := df(f, close)
 			key := newKey()
@@ -48,6 +48,38 @@ func TestDriversWrite(t *testing.T) {
 			x, xErr := d.GetBlockByContentHash(b.Signature.GetContentHash())
 			if xErr != nil {
 				t.Error(err)
+			}
+
+			if !bytes.Equal(x.GetPayload(), b.GetPayload()) {
+				t.Error(*x, *b)
+			}
+
+			close()
+		})
+	}
+}
+
+func TestDriversRead(t *testing.T) {
+	for name, df := range drivers {
+		t.Run(fmt.Sprintf("Driver:%s", name), func(t *testing.T) {
+			f, close := newTestFile(name)
+			d := df(f, close)
+			key := newKey()
+
+			var b *block.Block
+			b = newTestBlock(nil, key)
+			for i := 0; i < 100; i++ {
+				b = newTestBlock(b.GetSignature(), key)
+				err := d.Write(b)
+				if err != nil {
+					t.Error(err)
+				}
+
+			}
+
+			x, xErr := d.GetBlockByContentHash(b.Signature.GetContentHash())
+			if xErr != nil {
+				t.Error(xErr)
 			}
 
 			if !bytes.Equal(x.GetPayload(), b.GetPayload()) {
