@@ -1,22 +1,42 @@
 syntax="proto2";
+import "google/protobuf/timestamp.proto";
 
+message Hash {
+    required bytes      contentHash = 1; // sha512 hash of content. No salt
+}
 // metadat about a block signature
 message Signature {
-  required int64 timestamp = 1; // timestamp in seconds
-  required bytes contentHash = 2; // sha512 hash of content. No salt
-  required bytes signatureA = 3;
-  required bytes signatureB = 4;
+    required google.protobuf.Timestamp    timestamp = 1;
+    required Hash     hash = 2;
+    required bytes    signatureA = 3;
+    required bytes    signatureB = 4;
+}
+
+message Transaction {
+    required Signature  signature = 1;
+    required int64      payloadType = 2;
+    required bytes      payload = 3;
+}
+
+message Petition {
+    required bytes      hash = 1;
+    repeated Signature  signatures = 2;
 }
 
 // Metadata about a block
 message Block {
-  optional Signature parent    = 1;
-  required Signature signature = 2;
-  required bytes  payload      = 3;   // the data this block describes.
+    required google.protobuf.Timestamp    timestamp = 1;
+    optional Hash         parent    = 2;
+    required Petition     petition = 3;
+    repeated Transaction  transactions = 4;
+}
+
+message PublicKey {
+    required bytes      x = 1;
+    required bytes      y = 2;
 }
 
 message PrivateKey {
-    required bytes X = 1;
-    required bytes Y = 2;
-    required bytes D = 3;
+    required PublicKey  public = 1;
+    required bytes      d = 2;
 }

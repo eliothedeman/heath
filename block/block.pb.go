@@ -9,8 +9,12 @@ It is generated from these files:
 	block.proto
 
 It has these top-level messages:
+	Hash
 	Signature
+	Transaction
+	Petition
 	Block
+	PublicKey
 	PrivateKey
 */
 package block
@@ -18,6 +22,7 @@ package block
 import proto "github.com/golang/protobuf/proto"
 import fmt "fmt"
 import math "math"
+import google_protobuf "github.com/golang/protobuf/ptypes/timestamp"
 
 // Reference imports to suppress errors if they are not otherwise used.
 var _ = proto.Marshal
@@ -30,30 +35,47 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
 
+type Hash struct {
+	ContentHash      []byte `protobuf:"bytes,1,req,name=contentHash" json:"contentHash,omitempty"`
+	XXX_unrecognized []byte `json:"-"`
+}
+
+func (m *Hash) Reset()                    { *m = Hash{} }
+func (m *Hash) String() string            { return proto.CompactTextString(m) }
+func (*Hash) ProtoMessage()               {}
+func (*Hash) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{0} }
+
+func (m *Hash) GetContentHash() []byte {
+	if m != nil {
+		return m.ContentHash
+	}
+	return nil
+}
+
 // metadat about a block signature
 type Signature struct {
-	Timestamp        *int64 `protobuf:"varint,1,req,name=timestamp" json:"timestamp,omitempty"`
-	ContentHash      []byte `protobuf:"bytes,2,req,name=contentHash" json:"contentHash,omitempty"`
-	SignatureA       []byte `protobuf:"bytes,3,req,name=signatureA" json:"signatureA,omitempty"`
-	SignatureB       []byte `protobuf:"bytes,4,req,name=signatureB" json:"signatureB,omitempty"`
-	XXX_unrecognized []byte `json:"-"`
+	Timestamp        *google_protobuf.Timestamp `protobuf:"bytes,1,req,name=timestamp" json:"timestamp,omitempty"`
+	Hash             *Hash                      `protobuf:"bytes,2,req,name=hash" json:"hash,omitempty"`
+	SignatureA       []byte                     `protobuf:"bytes,3,req,name=signatureA" json:"signatureA,omitempty"`
+	SignatureB       []byte                     `protobuf:"bytes,4,req,name=signatureB" json:"signatureB,omitempty"`
+	XXX_unrecognized []byte                     `json:"-"`
 }
 
 func (m *Signature) Reset()                    { *m = Signature{} }
 func (m *Signature) String() string            { return proto.CompactTextString(m) }
 func (*Signature) ProtoMessage()               {}
-func (*Signature) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{0} }
+func (*Signature) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{1} }
 
-func (m *Signature) GetTimestamp() int64 {
-	if m != nil && m.Timestamp != nil {
-		return *m.Timestamp
+func (m *Signature) GetTimestamp() *google_protobuf.Timestamp {
+	if m != nil {
+		return m.Timestamp
 	}
-	return 0
+	return nil
 }
 
-func (m *Signature) GetContentHash() []byte {
+func (m *Signature) GetHash() *Hash {
 	if m != nil {
-		return m.ContentHash
+		return m.Hash
 	}
 	return nil
 }
@@ -72,62 +94,145 @@ func (m *Signature) GetSignatureB() []byte {
 	return nil
 }
 
-// Metadata about a block
-type Block struct {
-	Parent           *Signature `protobuf:"bytes,1,opt,name=parent" json:"parent,omitempty"`
-	Signature        *Signature `protobuf:"bytes,2,req,name=signature" json:"signature,omitempty"`
+type Transaction struct {
+	Signature        *Signature `protobuf:"bytes,1,req,name=signature" json:"signature,omitempty"`
+	PayloadType      *int64     `protobuf:"varint,2,req,name=payloadType" json:"payloadType,omitempty"`
 	Payload          []byte     `protobuf:"bytes,3,req,name=payload" json:"payload,omitempty"`
 	XXX_unrecognized []byte     `json:"-"`
 }
 
-func (m *Block) Reset()                    { *m = Block{} }
-func (m *Block) String() string            { return proto.CompactTextString(m) }
-func (*Block) ProtoMessage()               {}
-func (*Block) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{1} }
+func (m *Transaction) Reset()                    { *m = Transaction{} }
+func (m *Transaction) String() string            { return proto.CompactTextString(m) }
+func (*Transaction) ProtoMessage()               {}
+func (*Transaction) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{2} }
 
-func (m *Block) GetParent() *Signature {
-	if m != nil {
-		return m.Parent
-	}
-	return nil
-}
-
-func (m *Block) GetSignature() *Signature {
+func (m *Transaction) GetSignature() *Signature {
 	if m != nil {
 		return m.Signature
 	}
 	return nil
 }
 
-func (m *Block) GetPayload() []byte {
+func (m *Transaction) GetPayloadType() int64 {
+	if m != nil && m.PayloadType != nil {
+		return *m.PayloadType
+	}
+	return 0
+}
+
+func (m *Transaction) GetPayload() []byte {
 	if m != nil {
 		return m.Payload
 	}
 	return nil
 }
 
-type PrivateKey struct {
-	X                []byte `protobuf:"bytes,1,req,name=X,json=x" json:"X,omitempty"`
-	Y                []byte `protobuf:"bytes,2,req,name=Y,json=y" json:"Y,omitempty"`
-	D                []byte `protobuf:"bytes,3,req,name=D,json=d" json:"D,omitempty"`
+type Petition struct {
+	Hash             []byte       `protobuf:"bytes,1,req,name=hash" json:"hash,omitempty"`
+	Signatures       []*Signature `protobuf:"bytes,2,rep,name=signatures" json:"signatures,omitempty"`
+	XXX_unrecognized []byte       `json:"-"`
+}
+
+func (m *Petition) Reset()                    { *m = Petition{} }
+func (m *Petition) String() string            { return proto.CompactTextString(m) }
+func (*Petition) ProtoMessage()               {}
+func (*Petition) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{3} }
+
+func (m *Petition) GetHash() []byte {
+	if m != nil {
+		return m.Hash
+	}
+	return nil
+}
+
+func (m *Petition) GetSignatures() []*Signature {
+	if m != nil {
+		return m.Signatures
+	}
+	return nil
+}
+
+// Metadata about a block
+type Block struct {
+	Timestamp        *google_protobuf.Timestamp `protobuf:"bytes,1,req,name=timestamp" json:"timestamp,omitempty"`
+	Parent           *Hash                      `protobuf:"bytes,2,opt,name=parent" json:"parent,omitempty"`
+	Petition         *Petition                  `protobuf:"bytes,3,req,name=petition" json:"petition,omitempty"`
+	Transactions     []*Transaction             `protobuf:"bytes,4,rep,name=transactions" json:"transactions,omitempty"`
+	XXX_unrecognized []byte                     `json:"-"`
+}
+
+func (m *Block) Reset()                    { *m = Block{} }
+func (m *Block) String() string            { return proto.CompactTextString(m) }
+func (*Block) ProtoMessage()               {}
+func (*Block) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{4} }
+
+func (m *Block) GetTimestamp() *google_protobuf.Timestamp {
+	if m != nil {
+		return m.Timestamp
+	}
+	return nil
+}
+
+func (m *Block) GetParent() *Hash {
+	if m != nil {
+		return m.Parent
+	}
+	return nil
+}
+
+func (m *Block) GetPetition() *Petition {
+	if m != nil {
+		return m.Petition
+	}
+	return nil
+}
+
+func (m *Block) GetTransactions() []*Transaction {
+	if m != nil {
+		return m.Transactions
+	}
+	return nil
+}
+
+type PublicKey struct {
+	X                []byte `protobuf:"bytes,1,req,name=x" json:"x,omitempty"`
+	Y                []byte `protobuf:"bytes,2,req,name=y" json:"y,omitempty"`
 	XXX_unrecognized []byte `json:"-"`
 }
 
-func (m *PrivateKey) Reset()                    { *m = PrivateKey{} }
-func (m *PrivateKey) String() string            { return proto.CompactTextString(m) }
-func (*PrivateKey) ProtoMessage()               {}
-func (*PrivateKey) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{2} }
+func (m *PublicKey) Reset()                    { *m = PublicKey{} }
+func (m *PublicKey) String() string            { return proto.CompactTextString(m) }
+func (*PublicKey) ProtoMessage()               {}
+func (*PublicKey) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{5} }
 
-func (m *PrivateKey) GetX() []byte {
+func (m *PublicKey) GetX() []byte {
 	if m != nil {
 		return m.X
 	}
 	return nil
 }
 
-func (m *PrivateKey) GetY() []byte {
+func (m *PublicKey) GetY() []byte {
 	if m != nil {
 		return m.Y
+	}
+	return nil
+}
+
+type PrivateKey struct {
+	Public           *PublicKey `protobuf:"bytes,1,req,name=public" json:"public,omitempty"`
+	D                []byte     `protobuf:"bytes,2,req,name=d" json:"d,omitempty"`
+	XXX_unrecognized []byte     `json:"-"`
+}
+
+func (m *PrivateKey) Reset()                    { *m = PrivateKey{} }
+func (m *PrivateKey) String() string            { return proto.CompactTextString(m) }
+func (*PrivateKey) ProtoMessage()               {}
+func (*PrivateKey) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{6} }
+
+func (m *PrivateKey) GetPublic() *PublicKey {
+	if m != nil {
+		return m.Public
 	}
 	return nil
 }
@@ -140,27 +245,40 @@ func (m *PrivateKey) GetD() []byte {
 }
 
 func init() {
+	proto.RegisterType((*Hash)(nil), "Hash")
 	proto.RegisterType((*Signature)(nil), "Signature")
+	proto.RegisterType((*Transaction)(nil), "Transaction")
+	proto.RegisterType((*Petition)(nil), "Petition")
 	proto.RegisterType((*Block)(nil), "Block")
+	proto.RegisterType((*PublicKey)(nil), "PublicKey")
 	proto.RegisterType((*PrivateKey)(nil), "PrivateKey")
 }
 
 func init() { proto.RegisterFile("block.proto", fileDescriptor0) }
 
 var fileDescriptor0 = []byte{
-	// 214 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x09, 0x6e, 0x88, 0x02, 0xff, 0x5c, 0x8f, 0xbb, 0x4e, 0xc4, 0x30,
-	0x10, 0x45, 0x35, 0x59, 0x1e, 0xca, 0x24, 0x95, 0x2b, 0x17, 0x08, 0x59, 0xae, 0x5c, 0x6d, 0x41,
-	0x41, 0x4f, 0x44, 0x81, 0x44, 0x83, 0x4c, 0x03, 0xa5, 0xd9, 0xb5, 0x20, 0x62, 0x63, 0x5b, 0xce,
-	0x80, 0xc8, 0x37, 0xf0, 0xd3, 0x28, 0x96, 0xf3, 0xa2, 0x9c, 0x7b, 0x66, 0x46, 0xe7, 0x62, 0xf5,
-	0x76, 0xf2, 0x87, 0xcf, 0x7d, 0x88, 0x9e, 0xbc, 0xfc, 0x05, 0x2c, 0x9f, 0xdb, 0x77, 0x67, 0xe8,
-	0x2b, 0x5a, 0x76, 0x85, 0x25, 0xb5, 0x9d, 0xed, 0xc9, 0x74, 0x81, 0x83, 0x28, 0xd4, 0x4e, 0x2f,
-	0x01, 0x13, 0x58, 0x1d, 0xbc, 0x23, 0xeb, 0xe8, 0xc1, 0xf4, 0x1f, 0xbc, 0x10, 0x85, 0xaa, 0xf5,
-	0x3a, 0x62, 0xd7, 0x88, 0xfd, 0xf4, 0xec, 0x8e, 0xef, 0xd2, 0xc2, 0x2a, 0xd9, 0xf0, 0x86, 0x9f,
-	0xfd, 0xe3, 0x8d, 0xf4, 0x78, 0xde, 0x8c, 0x72, 0x4c, 0xe2, 0x45, 0x30, 0xd1, 0x3a, 0xe2, 0x20,
-	0x40, 0x55, 0x37, 0xb8, 0x9f, 0x25, 0x75, 0x26, 0x4c, 0x61, 0x39, 0x9f, 0x26, 0x99, 0xed, 0xda,
-	0x02, 0x19, 0xc7, 0xcb, 0x60, 0x86, 0x93, 0x37, 0xc7, 0xec, 0x34, 0x8d, 0xf2, 0x16, 0xf1, 0x29,
-	0xb6, 0xdf, 0x86, 0xec, 0xa3, 0x1d, 0x58, 0x8d, 0xf0, 0x92, 0x6a, 0xd7, 0x1a, 0x7e, 0xc6, 0xe9,
-	0x35, 0x97, 0x84, 0xc4, 0xee, 0xf3, 0x35, 0x1c, 0xff, 0x02, 0x00, 0x00, 0xff, 0xff, 0x0c, 0x47,
-	0x1a, 0x6e, 0x44, 0x01, 0x00, 0x00,
+	// 364 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x09, 0x6e, 0x88, 0x02, 0xff, 0xa4, 0x51, 0xcb, 0x6e, 0xe2, 0x30,
+	0x14, 0x55, 0x42, 0x60, 0xc8, 0x4d, 0x56, 0x5e, 0x65, 0x90, 0x66, 0x26, 0xb2, 0x34, 0x2a, 0xea,
+	0xc2, 0x54, 0xac, 0xba, 0xaa, 0x54, 0x56, 0x55, 0xbb, 0x41, 0x2e, 0x3f, 0x60, 0x82, 0x0b, 0x51,
+	0x43, 0x6c, 0xc5, 0xa6, 0x22, 0x7f, 0xd3, 0xdf, 0xe8, 0xdf, 0x55, 0x76, 0x9c, 0x07, 0x6c, 0xbb,
+	0xbc, 0xf7, 0x9c, 0xeb, 0xf3, 0x30, 0x44, 0xdb, 0x42, 0x64, 0xef, 0x44, 0x56, 0x42, 0x8b, 0xd9,
+	0xbf, 0xbd, 0x10, 0xfb, 0x82, 0x2f, 0xec, 0xb4, 0x3d, 0xbd, 0x2d, 0x74, 0x7e, 0xe4, 0x4a, 0xb3,
+	0xa3, 0x6c, 0x08, 0x78, 0x0e, 0xc1, 0x13, 0x53, 0x07, 0x94, 0x42, 0x94, 0x89, 0x52, 0xf3, 0x52,
+	0x9b, 0x31, 0xf1, 0x52, 0x7f, 0x1e, 0xd3, 0xe1, 0x0a, 0x7f, 0x7a, 0x10, 0xbe, 0xe6, 0xfb, 0x92,
+	0xe9, 0x53, 0xc5, 0xd1, 0x3d, 0x84, 0xdd, 0x53, 0x96, 0x1d, 0x2d, 0x67, 0xa4, 0x11, 0x23, 0xad,
+	0x18, 0xd9, 0xb4, 0x0c, 0xda, 0x93, 0xd1, 0x6f, 0x08, 0x0e, 0x46, 0xc2, 0xb7, 0x47, 0x63, 0x62,
+	0x1e, 0xa7, 0x76, 0x85, 0xfe, 0x02, 0xa8, 0x56, 0xe1, 0x31, 0x19, 0x59, 0x0f, 0x83, 0xcd, 0x05,
+	0xbe, 0x4a, 0x82, 0x2b, 0x7c, 0x85, 0x15, 0x44, 0x9b, 0x8a, 0x95, 0x8a, 0x65, 0x3a, 0x17, 0x25,
+	0x9a, 0x43, 0xd8, 0x81, 0xce, 0x23, 0x90, 0x2e, 0x02, 0xed, 0x41, 0x93, 0x5e, 0xb2, 0xba, 0x10,
+	0x6c, 0xb7, 0xa9, 0x25, 0xb7, 0xd6, 0x46, 0x74, 0xb8, 0x42, 0x09, 0xfc, 0x72, 0xa3, 0xf3, 0xd5,
+	0x8e, 0xf8, 0x19, 0xa6, 0x6b, 0xae, 0x73, 0xab, 0x88, 0x5c, 0xb6, 0xa6, 0xbe, 0x26, 0xd4, 0xed,
+	0xc0, 0xb4, 0x4a, 0xfc, 0x74, 0x74, 0x65, 0x63, 0x80, 0xe2, 0x2f, 0x0f, 0xc6, 0x2b, 0xf3, 0x7d,
+	0x3f, 0xe8, 0xf7, 0x0f, 0x4c, 0x24, 0xab, 0x78, 0xa9, 0x13, 0x3f, 0xf5, 0xfa, 0x86, 0xdd, 0x12,
+	0xfd, 0x87, 0xa9, 0x74, 0x76, 0x6d, 0x92, 0x68, 0x19, 0x92, 0xd6, 0x3f, 0xed, 0x20, 0x74, 0x07,
+	0xb1, 0xee, 0xab, 0x54, 0x49, 0x60, 0x7d, 0xc7, 0x64, 0xd0, 0x2f, 0xbd, 0x60, 0xe0, 0x1b, 0x08,
+	0xd7, 0xa7, 0x6d, 0x91, 0x67, 0x2f, 0xbc, 0x46, 0x31, 0x78, 0x67, 0xd7, 0x82, 0x77, 0x36, 0x53,
+	0x6d, 0x4b, 0x8d, 0xa9, 0x57, 0xe3, 0x07, 0x80, 0x75, 0x95, 0x7f, 0x30, 0xcd, 0x0d, 0x13, 0xc3,
+	0x44, 0xda, 0xb3, 0xee, 0x87, 0xba, 0x57, 0xa8, 0x43, 0xcc, 0xfd, 0xae, 0xbd, 0xdf, 0x7d, 0x07,
+	0x00, 0x00, 0xff, 0xff, 0x21, 0x08, 0x8d, 0xfc, 0xe1, 0x02, 0x00, 0x00,
 }

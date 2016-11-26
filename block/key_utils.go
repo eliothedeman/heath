@@ -18,10 +18,13 @@ func GenerateKey() (*ecdsa.PrivateKey, error) {
 }
 
 func MarshalKey(key *ecdsa.PrivateKey) ([]byte, error) {
-	k := PrivateKey{
+	p := PublicKey{
 		X: key.X.Bytes(),
 		Y: key.Y.Bytes(),
-		D: key.D.Bytes(),
+	}
+	k := PrivateKey{
+		Public: &p,
+		D:      key.D.Bytes(),
 	}
 
 	return proto.Marshal(&k)
@@ -39,8 +42,8 @@ func UnmarshalKey(buff []byte, key *ecdsa.PrivateKey) error {
 	key.D = new(big.Int)
 	key.Curve = newCurve()
 
-	key.X.SetBytes(k.GetX())
-	key.Y.SetBytes(k.GetY())
+	key.X.SetBytes(k.GetPublic().GetX())
+	key.Y.SetBytes(k.GetPublic().GetY())
 	key.D.SetBytes(k.GetD())
 
 	return nil
