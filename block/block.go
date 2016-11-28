@@ -4,6 +4,7 @@ import (
 	"crypto/ecdsa"
 	"crypto/rand"
 	"crypto/sha512"
+	"hash"
 	"time"
 
 	"github.com/pkg/errors"
@@ -16,14 +17,13 @@ var (
 	ErrInvalidBlock = errors.New("Block Not Valid")
 )
 
-func hash(b []byte) []byte {
-	h := sha512.Sum512(b)
-	return h[:]
+func newHash() hash.Hash {
+	return sha512.New()
 }
 
 func hashPayload(payload []byte) *Hash {
 	return &Hash{
-		ContentHash: hash(payload),
+		ContentHash: newHash().Sum(payload),
 	}
 }
 
@@ -83,6 +83,12 @@ func (b *Block) Valid(pubs []ecdsa.PublicKey) bool {
 	}
 
 	// validate petition
+	if !b.GetPetition().Valid(pubs) {
+		return false
+	}
+	if !b.GetPetition().validateTransactions(b.GetTransactions()) {
+		return false
+	}
 
 	return true
 }

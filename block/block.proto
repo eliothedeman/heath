@@ -19,7 +19,7 @@ message Transaction {
 }
 
 message Petition {
-    required bytes      hash = 1;
+    required Hash      hash = 1;
     repeated Signature  signatures = 2;
 }
 

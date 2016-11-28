@@ -2,7 +2,6 @@ package block
 
 import (
 	"crypto/ecdsa"
-	"crypto/sha512"
 	"math/big"
 )
 
@@ -31,11 +30,15 @@ func (t *Transaction) Valid(keys []ecdsa.PublicKey) bool {
 		}
 	}
 	return false
+}
 
+func signTransactions(p *ecdsa.PrivateKey, transactions []*Transaction) (*Signature, error) {
+	h := hashTransactions(transactions)
+	return NewSignature(p, h)
 }
 
 func hashTransactions(transactions []*Transaction) []byte {
-	h := sha512.New()
+	h := newHash()
 	for _, t := range transactions {
 		h.Write(t.GetPayload())
 	}
