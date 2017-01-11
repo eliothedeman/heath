@@ -7,6 +7,7 @@ import (
 	"hash"
 	"time"
 
+	"github.com/eliothedeman/randutil"
 	"github.com/pkg/errors"
 
 	"github.com/golang/protobuf/ptypes"
@@ -20,11 +21,54 @@ var (
 func GenTestBlock(keys, transactions int, parent *Block) *Block {
 	a, b := GenKeys(keys)
 	x := GenTestTransactions(a, transactions)
+	var hash *Hash
+	if parent == nil {
+		hash = parent.GetPetition().GetHash()
+	}
 
 	p := NewPetition(GenTestSignatures(a, x), x)
-	y, _ := NewBlock(parent.Petition.GetHash(), p, x, b)
+	y, _ := NewBlock(hash, p, x, b)
 
 	return y
+}
+func newKey() *ecdsa.PrivateKey {
+	k, _ := GenerateKey()
+	return k
+}
+
+func GenKeys(n int) ([]*ecdsa.PrivateKey, []ecdsa.PublicKey) {
+	var priv []*ecdsa.PrivateKey
+	var pub []ecdsa.PublicKey
+	for i := 0; i < n; i++ {
+		k := newKey()
+		priv = append(priv, k)
+		pub = append(pub, k.PublicKey)
+	}
+
+	return priv, pub
+}
+
+func GenTestTransaction(k *ecdsa.PrivateKey) *Transaction {
+	t, _ := NewTransaction(k, randutil.Bytes(100), 0)
+	return t
+}
+
+func GenTestTransactions(keys []*ecdsa.PrivateKey, n int) []*Transaction {
+	var t []*Transaction
+	for i := 0; i < n; i++ {
+		t = append(t, GenTestTransaction(keys[i%len(keys)]))
+	}
+	return t
+}
+
+func GenTestSignatures(keys []*ecdsa.PrivateKey, t []*Transaction) []*Signature {
+	var s []*Signature
+
+	for _, k := range keys {
+		y, _ := signTransactions(k, t)
+		s = append(s, y)
+	}
+	return s
 }
 
 func newHash() hash.Hash {
@@ -49,19 +93,6 @@ func signPayload(priv *ecdsa.PrivateKey, payload []byte) (a, b []byte, hash *Has
 func now() *timestamp.Timestamp {
 	t, _ := ptypes.TimestampProto(time.Now())
 	return t
-}
-
-func NewSignature(priv *ecdsa.PrivateKey, payload []byte) (*Signature, error) {
-	a, b, hash, err := signPayload(priv, payload)
-	if err != nil {
-		return nil, err
-	}
-
-	return &Signature{
-		SignatureA: a,
-		SignatureB: b,
-		Hash:       hash,
-	}, nil
 }
 
 func (b *Block) First() bool {

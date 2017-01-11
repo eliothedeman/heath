@@ -1,14 +1,6 @@
 package block
 
-import (
-	"crypto/ecdsa"
-	"testing"
-)
-
-func newKey() *ecdsa.PrivateKey {
-	k, _ := GenerateKey()
-	return k
-}
+import "testing"
 
 func TestBlockValid(t *testing.T) {
 	a, b := GenKeys(10)

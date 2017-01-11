@@ -67,7 +67,6 @@ func TestDriversRead(t *testing.T) {
 		t.Run(fmt.Sprintf("Driver:%s", name), func(t *testing.T) {
 			f, close := newTestFile(name)
 			d := df(f, close)
-			key := newKey()
 
 			var b *block.Block
 			b = block.GenTestBlock(1, 2, nil)
@@ -81,7 +80,7 @@ func TestDriversRead(t *testing.T) {
 
 			var count = 0
 			out, err := d.StreamBlocks(context.Background())
-			for b = range out {
+			for _ = range out {
 				count++
 			}
 			if count != 100 {
