@@ -17,6 +17,16 @@ var (
 	ErrInvalidBlock = errors.New("Block Not Valid")
 )
 
+func GenTestBlock(keys, transactions int, parent *Block) *Block {
+	a, b := GenKeys(keys)
+	x := GenTestTransactions(a, transactions)
+
+	p := NewPetition(GenTestSignatures(a, x), x)
+	y, _ := NewBlock(parent.Petition.GetHash(), p, x, b)
+
+	return y
+}
+
 func newHash() hash.Hash {
 	return sha512.New()
 }

@@ -81,7 +81,7 @@ func (n *NonCachedDriver) GetBlockByContentHash(hash []byte) (*block.Block, erro
 	for {
 		select {
 		case b = <-out:
-			if bytes.Equal(b.GetSignature().ContentHash, hash) {
+			if bytes.Equal(b.GetPetition().GetHash().GetContentHash(), hash) {
 				cancel()
 				return b, <-err
 			}
@@ -146,7 +146,7 @@ func (n *NonCachedDriver) SeekAndStreamUntil(t time.Time, until time.Time, ctx c
 			}
 
 			// Ensure that the timestamp is before the deadline.
-			if b.GetSignature().GetTimestamp() > until.Unix() {
+			if b.GetTimestamp().Seconds > until.Unix() {
 				return
 			}
 

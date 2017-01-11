@@ -11,9 +11,9 @@ func newKey() *ecdsa.PrivateKey {
 }
 
 func TestBlockValid(t *testing.T) {
-	a, b := genKeys(10)
-	x := genTestTransactions(a, 89)
-	p := NewPetition(genTestSignatures(a, x), x)
+	a, b := GenKeys(10)
+	x := GenTestTransactions(a, 10)
+	p := NewPetition(GenTestSignatures(a, x), x)
 
 	y, err := NewBlock(nil, p, x, b)
 	if err != nil {

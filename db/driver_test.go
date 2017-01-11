@@ -11,7 +11,6 @@ import (
 	"testing"
 
 	"github.com/eliothedeman/heath/block"
-	"github.com/eliothedeman/randutil"
 	"github.com/spf13/afero"
 )
 
@@ -28,31 +27,34 @@ func newKey() *ecdsa.PrivateKey {
 	k, _ := ecdsa.GenerateKey(elliptic.P521(), rand.Reader)
 	return k
 }
-func newTestBlock(s *block.Signature, priv *ecdsa.PrivateKey) *block.Block {
-	b, _ := block.NewBlock(s, priv, randutil.Bytes(randutil.Int()%1000))
-	return b
-}
 
 func TestDriversWrite(t *testing.T) {
 	for name, df := range drivers {
 		t.Run(fmt.Sprintf("Driver:%s", name), func(t *testing.T) {
 			f, close := newTestFile(name)
 			d := df(f, close)
-			key := newKey()
+			b := block.GenTestBlock(3, 10, nil)
 
-			b := newTestBlock(nil, key)
 			err := d.Write(b)
 			if err != nil {
 				t.Error(err)
 			}
 
-			x, xErr := d.GetBlockByContentHash(b.Signature.GetContentHash())
+			x, xErr := d.GetBlockByContentHash(b.GetPetition().GetHash().GetContentHash())
 			if xErr != nil {
 				t.Error(xErr)
 			}
 
-			if !bytes.Equal(x.GetPayload(), b.GetPayload()) {
-				t.Error(*x, *b)
+			xx := x.GetTransactions()
+			bb := b.GetTransactions()
+
+			for i := range xx {
+				if !bytes.Equal(xx[i].GetPayload(), bb[i].GetPayload()) {
+					t.Error(*xx[i], *bb[i])
+				}
+				if xx[i].GetPayloadType() != bb[i].GetPayloadType() {
+					t.FailNow()
+				}
 			}
 
 			close()
@@ -68,9 +70,9 @@ func TestDriversRead(t *testing.T) {
 			key := newKey()
 
 			var b *block.Block
-			b = newTestBlock(nil, key)
+			b = block.GenTestBlock(1, 2, nil)
 			for i := 0; i < 100; i++ {
-				b = newTestBlock(b.GetSignature(), key)
+				b = block.GenTestBlock(1, 2, b)
 				err := d.Write(b)
 				if err != nil {
 					t.Error(err)
