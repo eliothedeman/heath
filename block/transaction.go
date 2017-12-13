@@ -5,15 +5,14 @@ import (
 	"math/big"
 )
 
-func NewTransaction(priv *ecdsa.PrivateKey, payload []byte, payloadType int64) (*Transaction, error) {
+func NewTransaction(priv *ecdsa.PrivateKey, payload []byte) (*Transaction, error) {
 	sig, err := NewSignature(priv, payload)
 	if err != nil {
 		return nil, err
 	}
 	return &Transaction{
-		Signature:   sig,
-		Payload:     payload,
-		PayloadType: &payloadType,
+		Signature: sig,
+		Payload:   payload,
 	}, nil
 }
 

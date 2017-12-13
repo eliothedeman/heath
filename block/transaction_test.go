@@ -5,12 +5,10 @@ import (
 	"testing"
 )
 
-const PAYLOAD_TYPE_TEXT = 0
-
 func TestTransactionValid(t *testing.T) {
 	msg := "hello world"
 	k := newKey()
-	tx, err := NewTransaction(k, []byte(msg), PAYLOAD_TYPE_TEXT)
+	tx, err := NewTransaction(k, []byte(msg))
 	if err != nil {
 		t.Error(tx)
 	}

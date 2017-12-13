@@ -52,9 +52,6 @@ func TestDriversWrite(t *testing.T) {
 				if !bytes.Equal(xx[i].GetPayload(), bb[i].GetPayload()) {
 					t.Error(*xx[i], *bb[i])
 				}
-				if xx[i].GetPayloadType() != bb[i].GetPayloadType() {
-					t.FailNow()
-				}
 			}
 
 			close()

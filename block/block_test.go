@@ -1,6 +1,8 @@
 package block
 
-import "testing"
+import (
+	"testing"
+)
 
 func TestBlockValid(t *testing.T) {
 	a, b := GenKeys(10)
