@@ -1,6 +1,7 @@
 
 proto:
-	cd block && protoc --go_out=plugins=grpc,import_path=github.com/eliothedeman/heath/block:. *.proto
+	protoc -I=. --go_out=$(GOPATH)/src/ block/*.proto
+	protoc -I=. --go_out=$(GOPATH)/src/ wire/*.proto
 
 test: proto
 	go test -cover ./...

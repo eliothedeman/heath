@@ -1,5 +1,7 @@
 syntax = "proto3";
+package block;
 import "google/protobuf/timestamp.proto";
+option go_package = "github.com/eliothedeman/heath/block";
 
 message Hash {
   bytes contentHash = 1; // sha512 hash of content. No salt

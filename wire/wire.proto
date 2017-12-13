@@ -1,0 +1,38 @@
+syntax = "proto3";
+package wire;
+option go_package = "github.com/eliothedeman/heath/wire";
+
+import "block/block.proto";
+
+message ClearIdentity {
+    bytes data = 1;
+    bytes signature = 2;
+}
+
+// Send a piece of data so the other side can look up my public key.
+message Handshake1 {
+    ClearIdentity identity = 1;
+}
+
+// Respond with a ClearIdentity message that has been encrypted with this public key.
+// This will allow the sender of Handshake1 to identify the sender of Handshake2 with our public key.
+message Handshake2 {
+    bytes encryptedClearIdentity = 1;
+}
+
+message Payload {
+    oneof data {
+        bytes raw = 1;
+        block.PublicKey publicKey = 2;
+        block.Transaction transaction = 3;
+        block.Block block = 4;
+    }
+}
+
+message Entry {
+    int64 id = 1;
+    int64 size = 2;
+}
+message Manifest {
+    repeated Entry entries = 1;
+}
