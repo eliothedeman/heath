@@ -7,14 +7,14 @@ import "block/block.proto";
 // Send a piece of data so the other side can look up my public key.
 message Handshake1 {
     bytes rsa_pub = 1;
-    bytes signature = 2;
+    block.Signature signature = 2;
 }
 
 // Respond with a ClearIdentity message that has been encrypted with this public key.
 // This will allow the sender of Handshake1 to identify the sender of Handshake2 with our public key.
 message Handshake2 {
     bytes encrypted_rsa_pub = 1;
-    bytes signature = 2;
+    block.Signature signature = 2;
 }
 
 message Payload {
