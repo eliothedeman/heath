@@ -4,20 +4,17 @@ option go_package = "github.com/eliothedeman/heath/wire";
 
 import "block/block.proto";
 
-message ClearIdentity {
-    bytes data = 1;
-    bytes signature = 2;
-}
-
 // Send a piece of data so the other side can look up my public key.
 message Handshake1 {
-    ClearIdentity identity = 1;
+    bytes rsa_pub = 1;
+    bytes signature = 2;
 }
 
 // Respond with a ClearIdentity message that has been encrypted with this public key.
 // This will allow the sender of Handshake1 to identify the sender of Handshake2 with our public key.
 message Handshake2 {
-    bytes encryptedClearIdentity = 1;
+    bytes encrypted_rsa_pub = 1;
+    bytes signature = 2;
 }
 
 message Payload {
