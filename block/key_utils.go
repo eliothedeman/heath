@@ -6,15 +6,16 @@ import (
 	"crypto/rand"
 	"math/big"
 
+	"github.com/eliothedeman/heath/util"
 	"github.com/golang/protobuf/proto"
 )
 
-func newCurve() elliptic.Curve {
+func NewCurve() elliptic.Curve {
 	return elliptic.P521()
 }
 
 func GenerateKey() (*ecdsa.PrivateKey, error) {
-	return ecdsa.GenerateKey(newCurve(), rand.Reader)
+	return ecdsa.GenerateKey(NewCurve(), rand.Reader)
 }
 
 func MarshalKey(key *ecdsa.PrivateKey) ([]byte, error) {
@@ -40,7 +41,7 @@ func UnmarshalKey(buff []byte, key *ecdsa.PrivateKey) error {
 	key.X = new(big.Int)
 	key.Y = new(big.Int)
 	key.D = new(big.Int)
-	key.Curve = newCurve()
+	key.Curve = util.NewCurve()
 
 	key.X.SetBytes(k.GetPublic().GetX())
 	key.Y.SetBytes(k.GetPublic().GetY())
