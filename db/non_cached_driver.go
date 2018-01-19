@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"context"
 	"io"
-	"log"
 	"sync"
 	"time"
 
@@ -122,7 +121,6 @@ func (n *NonCachedDriver) SeekAndStreamUntil(t time.Time, until time.Time, ctx c
 			case errChan <- err:
 
 			case <-done:
-				log.Println("here")
 
 			}
 			close(errChan)

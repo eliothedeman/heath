@@ -2,7 +2,6 @@ package db
 
 import (
 	"context"
-	"io"
 	"time"
 
 	"github.com/eliothedeman/heath/block"
@@ -12,7 +11,7 @@ var (
 	drivers = map[string]DriverFactory{}
 )
 
-type DriverFactory func(store io.ReadWriteSeeker, closeFunc func() error) Driver
+type DriverFactory func(url string, key *block.PrivateKey) Driver
 
 func RegisterDriver(name string, df DriverFactory) {
 	drivers[name] = df
