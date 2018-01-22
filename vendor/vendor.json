@@ -3,6 +3,12 @@
 	"ignore": "test",
 	"package": [
 		{
+			"checksumSHA1": "gtpgX1HmQSbg+vD9xYp8hvYLhTY=",
+			"path": "github.com/eliothedeman/cryptio",
+			"revision": "b7ba18b1c46884148fa5e1a446936e3482b9d549",
+			"revisionTime": "2018-01-21T17:49:26Z"
+		},
+		{
 			"checksumSHA1": "W3bfu8ca8cgecDV7Qf2XZMmC1BQ=",
 			"path": "github.com/eliothedeman/randutil",
 			"revision": "f83d462f0ca7f62ccea94dfdc9ed4bc15bcc5e27",
