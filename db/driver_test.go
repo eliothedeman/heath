@@ -28,11 +28,12 @@ func newKey() *ecdsa.PrivateKey {
 	return k
 }
 
-func TestDriversWrite(t *testing.T) {
+func TestDriverWrite(t *testing.T) {
 	for name, df := range drivers {
 		t.Run(fmt.Sprintf("Driver:%s", name), func(t *testing.T) {
 			f, close := newTestFile(name)
-			d := df(f, close)
+			defer close()
+			d := df(f)
 			b := block.GenTestBlock(3, 10, nil)
 
 			err := d.Write(b)
@@ -63,7 +64,8 @@ func TestDriversRead(t *testing.T) {
 	for name, df := range drivers {
 		t.Run(fmt.Sprintf("Driver:%s", name), func(t *testing.T) {
 			f, close := newTestFile(name)
-			d := df(f, close)
+			defer close()
+			d := df(f)
 
 			var b *block.Block
 			b = block.GenTestBlock(1, 2, nil)

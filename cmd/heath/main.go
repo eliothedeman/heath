@@ -2,12 +2,15 @@ package main
 
 import (
 	"os"
+	"path"
 
 	cli "gopkg.in/urfave/cli.v1"
 )
 
 var (
-	defaultKeyName = os.Getenv("HOME") + "/.config/heath/private_key"
+	defaultParentPath = path.Join(os.Getenv("HOME"), ".config/heath")
+	defaultKeyPath    = path.Join(defaultParentPath, "private_key")
+	defaultDbPath     = path.Join(defaultParentPath, "heath.db")
 )
 
 func main() {
@@ -17,17 +20,8 @@ func main() {
 	app.Usage = "The heath distributed ledger"
 
 	app.Commands = []cli.Command{
-		{
-			Name: "keygen",
-			Flags: []cli.Flag{
-				cli.StringFlag{
-					Name:  "o",
-					Value: defaultKeyName,
-					Usage: "Output path for key.",
-				},
-			},
-			Action: keygen,
-		}}
+		keygen,
+	}
 
 	app.Run(os.Args)
 }

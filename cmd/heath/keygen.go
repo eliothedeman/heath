@@ -19,7 +19,19 @@ import (
 
 var salt = []byte("a;ljaeyg24nlsjmhasdfuvhasoddf;lkjal")
 
-func keygen(c *cli.Context) {
+var keygen = cli.Command{
+	Name: "keygen",
+	Flags: []cli.Flag{
+		cli.StringFlag{
+			Name:  "o",
+			Value: defaultKeyPath,
+			Usage: "Output path for key.",
+		},
+	},
+	Action: kg,
+}
+
+func kg(c *cli.Context) {
 	pass, err := readPassword()
 	if err != nil {
 		log.Fatal(err)

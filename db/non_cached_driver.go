@@ -22,24 +22,21 @@ var (
 )
 
 func init() {
-	RegisterDriver("non-cached", func(store io.ReadWriteSeeker, closeFunc func() error) Driver {
-
-		return NewNonCachedDriver(store, closeFunc)
+	RegisterDriver("non-cached", func(backing io.ReadWriteSeeker) Driver {
+		return NewNonCachedDriver(backing)
 	})
 }
 
 // NonCachedDriver impliments the Driver interface with a single local file.
 // As the name implies, this is a simple driver that does no caching.
 type NonCachedDriver struct {
-	rws   io.ReadWriteSeeker
-	close func() error
+	rws io.ReadWriteSeeker
 	sync.Mutex
 }
 
-func NewNonCachedDriver(rws io.ReadWriteSeeker, closeFunc func() error) *NonCachedDriver {
+func NewNonCachedDriver(rws io.ReadWriteSeeker) *NonCachedDriver {
 	return &NonCachedDriver{
-		rws:   rws,
-		close: closeFunc,
+		rws: rws,
 	}
 }
 
