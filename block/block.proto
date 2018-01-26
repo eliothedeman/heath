@@ -3,13 +3,10 @@ package block;
 import "google/protobuf/timestamp.proto";
 option go_package = "github.com/eliothedeman/heath/block";
 
-message Hash {
-  bytes contentHash = 1; // sha512 hash of content. No salt
-}
 // metadat about a block signature
 message Signature {
   google.protobuf.Timestamp timestamp = 1;
-  Hash hash = 2;
+  bytes hash = 2;
   bytes signatureA = 3;
   bytes signatureB = 4;
 }
@@ -20,14 +17,14 @@ message Transaction {
 }
 
 message Petition {
-  Hash hash = 1;
+  bytes hash = 1;
   repeated Signature signatures = 2;
 }
 
 // Metadata about a block
 message Block {
   google.protobuf.Timestamp timestamp = 1;
-  Hash parent = 2;
+  bytes parent = 2;
   Petition petition = 3;
   repeated Transaction transactions = 4;
 }

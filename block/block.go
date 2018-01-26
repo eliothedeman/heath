@@ -39,15 +39,13 @@ func newHash() hash.Hash {
 	return sha512.New()
 }
 
-func hashPayload(payload []byte) *Hash {
-	return &Hash{
-		ContentHash: newHash().Sum(payload),
-	}
+func hashPayload(payload []byte) []byte {
+	return newHash().Sum(payload)
 }
 
-func signPayload(priv *ecdsa.PrivateKey, payload []byte) (a, b []byte, hash *Hash, err error) {
+func signPayload(priv *ecdsa.PrivateKey, payload []byte) (a, b []byte, hash []byte, err error) {
 	hash = hashPayload(payload)
-	ax, bx, sErr := ecdsa.Sign(rand.Reader, priv, hash.ContentHash)
+	ax, bx, sErr := ecdsa.Sign(rand.Reader, priv, hash)
 	a = ax.Bytes()
 	b = bx.Bytes()
 	err = sErr
@@ -63,7 +61,7 @@ func (b *Block) First() bool {
 	return b.GetParent() == nil
 }
 
-func NewBlock(parent *Hash, petition *Petition, transactions []*Transaction, publicKeys []ecdsa.PublicKey) (*Block, error) {
+func NewBlock(parent []byte, petition *Petition, transactions []*Transaction, publicKeys []ecdsa.PublicKey) (*Block, error) {
 	b := Block{
 		Timestamp:    now(),
 		Parent:       parent,
@@ -108,7 +106,7 @@ func (b *Block) Valid(pubs []ecdsa.PublicKey) bool {
 func GenTestBlock(keys, transactions int, parent *Block) *Block {
 	a, b := GenKeys(keys)
 	x := GenTestTransactions(a, transactions)
-	var hash *Hash
+	var hash []byte
 	if parent == nil {
 		hash = parent.GetPetition().GetHash()
 	}

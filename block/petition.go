@@ -9,9 +9,7 @@ func NewPetition(signatures []*Signature, transactions []*Transaction) *Petition
 	hashedContent := hashTransactions(transactions)
 
 	return &Petition{
-		Hash: &Hash{
-			ContentHash: hashedContent,
-		},
+		Hash:       hashedContent,
 		Signatures: signatures,
 	}
 }
@@ -23,7 +21,7 @@ func (p *Petition) validateTransactions(transactions []*Transaction) bool {
 		h.Write(t.GetPayload())
 	}
 
-	if !bytes.Equal(p.GetHash().GetContentHash(), h.Sum(nil)) {
+	if !bytes.Equal(p.GetHash(), h.Sum(nil)) {
 		return false
 	}
 
@@ -37,7 +35,7 @@ func (p *Petition) Valid(keys []ecdsa.PublicKey) bool {
 	for _, s := range p.GetSignatures() {
 		valid := false
 		for i, _ := range keys {
-			if ecdsa.Verify(&keys[i], s.GetHash().GetContentHash(), s.GetA(), s.GetB()) {
+			if ecdsa.Verify(&keys[i], s.GetHash(), s.GetA(), s.GetB()) {
 				valid = true
 				break
 			}

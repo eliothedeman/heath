@@ -24,7 +24,7 @@ func (t *Transaction) Valid(keys []ecdsa.PublicKey) bool {
 
 	// Iterate through keys to see
 	for i := range keys {
-		if ecdsa.Verify(&keys[i], hashPayload(t.GetPayload()).GetContentHash(), ax, bx) {
+		if ecdsa.Verify(&keys[i], hashPayload(t.GetPayload()), ax, bx) {
 			return true
 		}
 	}

@@ -77,7 +77,7 @@ func (n *NonCachedDriver) GetBlockByContentHash(hash []byte) (*block.Block, erro
 	for {
 		select {
 		case b = <-out:
-			if bytes.Equal(b.GetPetition().GetHash().GetContentHash(), hash) {
+			if bytes.Equal(b.GetPetition().GetHash(), hash) {
 				cancel()
 				return b, <-err
 			}

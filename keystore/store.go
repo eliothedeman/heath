@@ -44,7 +44,7 @@ func NewMemoryStore(priv *ecdsa.PrivateKey) *Memory {
 // Find a key by the given signature
 func (m *Memory) Find(sig *block.Signature) (*ecdsa.PublicKey, error) {
 	for _, p := range m.pubs {
-		if ecdsa.Verify(p, sig.GetHash().GetContentHash(), sig.GetA(), sig.GetB()) {
+		if ecdsa.Verify(p, sig.GetHash(), sig.GetA(), sig.GetB()) {
 			return p, nil
 		}
 	}
