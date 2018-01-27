@@ -9,9 +9,6 @@ import (
 
 	"github.com/eliothedeman/randutil"
 	"github.com/pkg/errors"
-
-	"github.com/golang/protobuf/ptypes"
-	"github.com/golang/protobuf/ptypes/timestamp"
 )
 
 var (
@@ -52,18 +49,13 @@ func signPayload(priv *ecdsa.PrivateKey, payload []byte) (a, b []byte, hash []by
 	return
 }
 
-func now() *timestamp.Timestamp {
-	t, _ := ptypes.TimestampProto(time.Now())
-	return t
-}
-
 func (b *Block) First() bool {
 	return b.GetParent() == nil
 }
 
 func NewBlock(parent []byte, petition *Petition, transactions []*Transaction, publicKeys []ecdsa.PublicKey) (*Block, error) {
 	b := Block{
-		Timestamp:    now(),
+		Timestamp:    time.Now().Unix(),
 		Parent:       parent,
 		Petition:     petition,
 		Transactions: transactions,

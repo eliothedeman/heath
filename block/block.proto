@@ -5,7 +5,7 @@ option go_package = "github.com/eliothedeman/heath/block";
 
 // metadat about a block signature
 message Signature {
-  google.protobuf.Timestamp timestamp = 1;
+  int64 timestamp = 1;
   bytes hash = 2;
   bytes signatureA = 3;
   bytes signatureB = 4;
@@ -23,7 +23,7 @@ message Petition {
 
 // Metadata about a block
 message Block {
-  google.protobuf.Timestamp timestamp = 1;
+  int64 timestamp = 1;
   bytes parent = 2;
   Petition petition = 3;
   repeated Transaction transactions = 4;

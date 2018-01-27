@@ -70,6 +70,7 @@ func (n *NonCachedDriver) writeNoLock(b *block.Block) error {
 	n.rws.Seek(0, io.SeekEnd)
 	return writeWithPrefix(buff, n.rws)
 }
+
 func (n *NonCachedDriver) GetBlockByContentHash(hash []byte) (*block.Block, error) {
 	ctx, cancel := context.WithCancel(context.Background())
 	out, err := n.StreamBlocks(ctx)
@@ -141,7 +142,7 @@ func (n *NonCachedDriver) SeekAndStreamUntil(t time.Time, until time.Time, ctx c
 			}
 
 			// Ensure that the timestamp is before the deadline.
-			if b.GetTimestamp().Seconds > until.Unix() {
+			if b.GetTimestamp() > until.Unix() {
 				return
 			}
 

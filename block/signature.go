@@ -3,6 +3,7 @@ package block
 import (
 	"crypto/ecdsa"
 	"math/big"
+	"time"
 )
 
 func (s *Signature) GetA() *big.Int {
@@ -24,7 +25,7 @@ func NewSignature(priv *ecdsa.PrivateKey, payload []byte) (*Signature, error) {
 	}
 
 	return &Signature{
-		Timestamp:  now(),
+		Timestamp:  time.Now().Unix(),
 		SignatureA: a,
 		SignatureB: b,
 		Hash:       hash,
