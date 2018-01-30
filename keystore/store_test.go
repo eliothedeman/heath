@@ -27,7 +27,10 @@ func testStore(t *testing.T, s Store) {
 		t.Fatal(err)
 	}
 
-	x, err := block.NewSignature(a, []byte("Hello world"))
+	h := block.NewHash()
+	h.Write([]byte("Hello world"))
+
+	x, err := block.NewSignature(a, h)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -45,7 +48,9 @@ func testStore(t *testing.T, s Store) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	x, err = block.NewSignature(a, []byte("Whats up"))
+	h2 := block.NewHash()
+	h2.Write([]byte("whats up"))
+	x, err = block.NewSignature(a, h2)
 	if err != nil {
 		t.Fatal(err)
 	}

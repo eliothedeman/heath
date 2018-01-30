@@ -31,7 +31,7 @@ func GenKeys(n int) ([]*ecdsa.PrivateKey, []ecdsa.PublicKey) {
 	return priv, pub
 }
 
-func newHash() hash.Hash {
+func NewHash() hash.Hash {
 	return sha512.New()
 }
 
@@ -96,7 +96,7 @@ func GenTestBlock(keys, transactions int, parent *Block) *Block {
 }
 
 func GenTestTransaction(k *ecdsa.PrivateKey) *Transaction {
-	t, _ := NewTransaction(k, &Transaction_Raw{randutil.Bytes(100)})
+	t, _ := NewTransaction(k, randutil.Bytes(100))
 	return t
 }
 

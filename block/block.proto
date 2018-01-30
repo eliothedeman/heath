@@ -12,10 +12,11 @@ message Signature {
 
 message Transaction {
   Signature signature = 1;
-  oneof payload {
-    bytes raw = 2;
-    PublicKey newPublicKey = 3;
-  }
+  enum Type {
+    Raw = 0;
+    PublicKey = 1;
+  };
+  bytes payload = 2;
 }
 
 message Petition {

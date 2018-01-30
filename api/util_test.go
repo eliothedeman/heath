@@ -4,6 +4,7 @@ import (
 	"crypto/ecdsa"
 	"io/ioutil"
 	"os"
+	"strings"
 	"testing"
 
 	"github.com/eliothedeman/heath/keystore"
@@ -33,7 +34,7 @@ func newKey(t *testing.T) *ecdsa.PrivateKey {
 
 func newTestDB(t *testing.T) db.Driver {
 	t.Helper()
-	f, err := ioutil.TempFile(os.TempDir(), t.Name())
+	f, err := ioutil.TempFile(os.TempDir(), strings.Replace(t.Name(), "/", "_", -1))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -42,6 +43,7 @@ func newTestDB(t *testing.T) db.Driver {
 }
 
 func harness(t *testing.T) (*ecdsa.PrivateKey, db.Driver, *gin.Engine) {
+	t.Helper()
 	k := newKey(t)
 	d := newTestDB(t)
 	e := api.NewEngine(k, d)

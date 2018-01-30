@@ -8,7 +8,7 @@ import (
 func TestTransactionValid(t *testing.T) {
 	msg := "hello world"
 	k := newKey()
-	tx, err := NewTransaction(k, &Transaction_Raw{[]byte(msg)})
+	tx, err := NewTransaction(k, []byte(msg))
 	if err != nil {
 		t.Error(tx)
 	}
@@ -21,7 +21,7 @@ func TestTransactionValid(t *testing.T) {
 		t.Error("Transaction should not be valid")
 	}
 
-	got := tx.GetPayload().(*Transaction_Raw).Raw
+	got := tx.GetPayload()
 
 	if string(got) != msg {
 		t.Errorf("wanted %s got %s", msg, string(got))

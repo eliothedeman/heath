@@ -7,7 +7,7 @@ import (
 )
 
 func NewPetition(signatures []*Signature, transactions []*Transaction) *Petition {
-	h := newHash()
+	h := NewHash()
 	b := make([]byte, sha512.Size)
 	hashTransactions(h, transactions)
 	b = h.Sum(b[:0])
@@ -20,7 +20,7 @@ func NewPetition(signatures []*Signature, transactions []*Transaction) *Petition
 
 func (p *Petition) validateTransactions(transactions []*Transaction) bool {
 	// calculate hash of transactions
-	h := newHash()
+	h := NewHash()
 	hashTransactions(h, transactions)
 	b := make([]byte, sha512.Size)
 
