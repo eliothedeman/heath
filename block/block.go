@@ -2,7 +2,6 @@ package block
 
 import (
 	"crypto/ecdsa"
-	"crypto/rand"
 	"crypto/sha512"
 	"hash"
 	"time"
@@ -34,19 +33,6 @@ func GenKeys(n int) ([]*ecdsa.PrivateKey, []ecdsa.PublicKey) {
 
 func newHash() hash.Hash {
 	return sha512.New()
-}
-
-func hashPayload(payload []byte) []byte {
-	return newHash().Sum(payload)
-}
-
-func signPayload(priv *ecdsa.PrivateKey, payload []byte) (a, b []byte, hash []byte, err error) {
-	hash = hashPayload(payload)
-	ax, bx, sErr := ecdsa.Sign(rand.Reader, priv, hash)
-	a = ax.Bytes()
-	b = bx.Bytes()
-	err = sErr
-	return
 }
 
 func (b *Block) First() bool {
@@ -110,7 +96,7 @@ func GenTestBlock(keys, transactions int, parent *Block) *Block {
 }
 
 func GenTestTransaction(k *ecdsa.PrivateKey) *Transaction {
-	t, _ := NewTransaction(k, randutil.Bytes(100))
+	t, _ := NewTransaction(k, &Transaction_Raw{randutil.Bytes(100)})
 	return t
 }
 

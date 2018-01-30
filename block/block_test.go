@@ -1,8 +1,13 @@
 package block
 
 import (
+	"log"
 	"testing"
 )
+
+func init() {
+	log.SetFlags(log.Lshortfile)
+}
 
 func TestBlockValid(t *testing.T) {
 	a, b := GenKeys(10)

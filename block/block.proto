@@ -1,6 +1,5 @@
 syntax = "proto3";
 package block;
-import "google/protobuf/timestamp.proto";
 option go_package = "github.com/eliothedeman/heath/block";
 
 // metadat about a block signature
@@ -13,7 +12,10 @@ message Signature {
 
 message Transaction {
   Signature signature = 1;
-  bytes payload = 2;
+  oneof payload {
+    bytes raw = 2;
+    PublicKey newPublicKey = 3;
+  }
 }
 
 message Petition {
@@ -32,6 +34,7 @@ message Block {
 message PublicKey {
   bytes x = 1;
   bytes y = 2;
+  string hint = 3; // hex encoded sha512 of x then y
 }
 
 message PrivateKey {

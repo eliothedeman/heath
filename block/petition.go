@@ -3,13 +3,17 @@ package block
 import (
 	"bytes"
 	"crypto/ecdsa"
+	"crypto/sha512"
 )
 
 func NewPetition(signatures []*Signature, transactions []*Transaction) *Petition {
-	hashedContent := hashTransactions(transactions)
+	h := newHash()
+	b := make([]byte, sha512.Size)
+	hashTransactions(h, transactions)
+	b = h.Sum(b[:0])
 
 	return &Petition{
-		Hash:       hashedContent,
+		Hash:       b,
 		Signatures: signatures,
 	}
 }
@@ -17,11 +21,10 @@ func NewPetition(signatures []*Signature, transactions []*Transaction) *Petition
 func (p *Petition) validateTransactions(transactions []*Transaction) bool {
 	// calculate hash of transactions
 	h := newHash()
-	for _, t := range transactions {
-		h.Write(t.GetPayload())
-	}
+	hashTransactions(h, transactions)
+	b := make([]byte, sha512.Size)
 
-	if !bytes.Equal(p.GetHash(), h.Sum(nil)) {
+	if !bytes.Equal(p.GetHash(), h.Sum(b[:0])) {
 		return false
 	}
 
@@ -34,7 +37,7 @@ func (p *Petition) Valid(keys []ecdsa.PublicKey) bool {
 
 	for _, s := range p.GetSignatures() {
 		valid := false
-		for i, _ := range keys {
+		for i := range keys {
 			if ecdsa.Verify(&keys[i], s.GetHash(), s.GetA(), s.GetB()) {
 				valid = true
 				break
