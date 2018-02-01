@@ -16,7 +16,8 @@ message Transaction {
     Raw = 0;
     PublicKey = 1;
   };
-  bytes payload = 2;
+  Type type = 2;
+  bytes payload = 3;
 }
 
 message Petition {

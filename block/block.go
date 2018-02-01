@@ -96,7 +96,7 @@ func GenTestBlock(keys, transactions int, parent *Block) *Block {
 }
 
 func GenTestTransaction(k *ecdsa.PrivateKey) *Transaction {
-	t, _ := NewTransaction(k, randutil.Bytes(100))
+	t, _ := NewTransaction(k, randutil.Bytes(100), Transaction_Raw)
 	return t
 }
 
