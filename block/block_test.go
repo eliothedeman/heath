@@ -12,9 +12,8 @@ func init() {
 func TestBlockValid(t *testing.T) {
 	a, b := GenKeys(10)
 	x := GenTestTransactions(a, 10)
-	p := NewPetition(GenTestSignatures(a, x), x)
 
-	y, err := NewBlock(nil, p, x, b)
+	y, err := NewBlock(nil, x, b)
 	if err != nil {
 		t.Error(err)
 	}

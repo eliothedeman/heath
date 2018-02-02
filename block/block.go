@@ -39,17 +39,20 @@ func (b *Block) First() bool {
 	return b.GetParent() == nil
 }
 
-func NewBlock(parent []byte, petition *Petition, transactions []*Transaction, publicKeys []ecdsa.PublicKey) (*Block, error) {
+func NewBlock(parent []byte, transactions []*Transaction, publicKeys []ecdsa.PublicKey) (*Block, error) {
 	b := Block{
 		Timestamp:    time.Now().Unix(),
 		Parent:       parent,
-		Petition:     petition,
 		Transactions: transactions,
 	}
 
 	if !b.Valid(publicKeys) {
 		return nil, ErrInvalidBlock
 	}
+
+	h := NewHash()
+	hashTransactions(h, transactions)
+	b.Hash = h.Sum(nil)
 
 	return &b, nil
 }
@@ -66,18 +69,6 @@ func (b *Block) Valid(pubs []ecdsa.PublicKey) bool {
 		}
 	}
 
-	// validate petition
-	p := b.GetPetition()
-	if p == nil {
-		return false
-	}
-	if !p.Valid(pubs) {
-		return false
-	}
-	if !p.validateTransactions(b.GetTransactions()) {
-		return false
-	}
-
 	return true
 }
 
@@ -85,12 +76,11 @@ func GenTestBlock(keys, transactions int, parent *Block) *Block {
 	a, b := GenKeys(keys)
 	x := GenTestTransactions(a, transactions)
 	var hash []byte
-	if parent == nil {
-		hash = parent.GetPetition().GetHash()
+	if parent != nil {
+		hash = parent.Hash
 	}
 
-	p := NewPetition(GenTestSignatures(a, x), x)
-	y, _ := NewBlock(hash, p, x, b)
+	y, _ := NewBlock(hash, x, b)
 
 	return y
 }

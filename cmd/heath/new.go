@@ -8,7 +8,9 @@ import (
 	"log"
 	"os"
 
+	"github.com/eliothedeman/cryptio"
 	"github.com/eliothedeman/heath/block"
+	"github.com/eliothedeman/heath/db"
 	"github.com/golang/protobuf/proto"
 
 	"golang.org/x/crypto/pbkdf2"
@@ -69,8 +71,8 @@ func newDB(c *cli.Context) {
 		log.Fatal(err)
 	}
 
-	// rws := cryptio.ReadWriteSeeker(f, b)
-	// d := db.NewNonCachedDriver(rws)
+	rws := cryptio.ReadWriteSeeker(f, b)
+	d := db.NewNonCachedDriver(rws)
 
 	pub, _ := proto.Marshal(protoKey.Public)
 
@@ -78,5 +80,13 @@ func newDB(c *cli.Context) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	log.Println(t)
+
+	blk, err := block.NewBlock(nil, []*block.Transaction{t}, []ecdsa.PublicKey{key.PublicKey})
+	if err != nil {
+		log.Fatal(err)
+	}
+	err = d.Write(blk)
+	if err != nil {
+		log.Fatal(err)
+	}
 }

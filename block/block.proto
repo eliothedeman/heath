@@ -20,16 +20,11 @@ message Transaction {
   bytes payload = 3;
 }
 
-message Petition {
-  bytes hash = 1;
-  repeated Signature signatures = 2;
-}
-
 // Metadata about a block
 message Block {
   int64 timestamp = 1;
   bytes parent = 2;
-  Petition petition = 3;
+  bytes hash = 3;
   repeated Transaction transactions = 4;
 }
 
