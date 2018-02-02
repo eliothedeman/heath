@@ -41,7 +41,14 @@ func TestDriverWrite(t *testing.T) {
 				t.Error(err)
 			}
 
-			x, xErr := d.GetBlockByContentHash(b.GetHash())
+			var x *block.Block
+			xErr := EachBlock(d, func(y *block.Block) bool {
+				if bytes.Equal(x.GetHash(), b.GetHash()) {
+					x = y
+					return false
+				}
+				return true
+			})
 			if xErr != nil {
 				t.Error(xErr)
 			}

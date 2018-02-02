@@ -1,7 +1,10 @@
 package api
 
 import (
+	"bytes"
 	"encoding/hex"
+
+	"github.com/eliothedeman/heath/block"
 
 	"github.com/eliothedeman/heath/db"
 	"github.com/gin-gonic/gin"
@@ -14,7 +17,14 @@ func getBlock(c *gin.Context) {
 		return
 	}
 	d := c.MustGet("db").(db.Driver)
-	b, err := d.GetBlockByContentHash(hash)
+	var b *block.Block
+	err = db.EachBlock(d, func(x *block.Block) bool {
+		if bytes.Equal(x.GetHash(), hash) {
+			b = x
+			return false
+		}
+		return true
+	})
 	if err != nil {
 		c.AbortWithError(400, err)
 		return
