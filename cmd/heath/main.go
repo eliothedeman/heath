@@ -21,6 +21,7 @@ func main() {
 
 	app.Commands = []cli.Command{
 		keygen,
+		newdb,
 	}
 
 	app.Run(os.Args)
