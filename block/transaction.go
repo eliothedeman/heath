@@ -7,7 +7,7 @@ import (
 	"math/big"
 )
 
-func NewTransaction(priv *ecdsa.PrivateKey, payload []byte) (*Transaction, error) {
+func NewTransaction(priv *ecdsa.PrivateKey, payload []byte, t Transaction_Type) (*Transaction, error) {
 	h := NewHash()
 	h.Write(payload)
 	sig, err := NewSignature(priv, h)
@@ -17,6 +17,7 @@ func NewTransaction(priv *ecdsa.PrivateKey, payload []byte) (*Transaction, error
 	return &Transaction{
 		Signature: sig,
 		Payload:   payload,
+		Type:      t,
 	}, nil
 }
 

@@ -8,7 +8,7 @@ import (
 func TestTransactionValid(t *testing.T) {
 	msg := "hello world"
 	k := newKey()
-	tx, err := NewTransaction(k, []byte(msg))
+	tx, err := NewTransaction(k, []byte(msg), Transaction_Raw)
 	if err != nil {
 		t.Error(tx)
 	}
