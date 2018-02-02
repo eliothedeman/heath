@@ -16,19 +16,15 @@ message Transaction {
     Raw = 0;
     PublicKey = 1;
   };
-  bytes payload = 2;
-}
-
-message Petition {
-  bytes hash = 1;
-  repeated Signature signatures = 2;
+  Type type = 2;
+  bytes payload = 3;
 }
 
 // Metadata about a block
 message Block {
   int64 timestamp = 1;
   bytes parent = 2;
-  Petition petition = 3;
+  bytes hash = 3;
   repeated Transaction transactions = 4;
 }
 

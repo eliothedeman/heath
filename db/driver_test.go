@@ -41,7 +41,7 @@ func TestDriverWrite(t *testing.T) {
 				t.Error(err)
 			}
 
-			x, xErr := d.GetBlockByContentHash(b.GetPetition().GetHash())
+			x, xErr := d.GetBlockByContentHash(b.GetHash())
 			if xErr != nil {
 				t.Error(xErr)
 			}
