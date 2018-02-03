@@ -81,10 +81,7 @@ func newDB(c *cli.Context) {
 		log.Fatal(err)
 	}
 
-	blk, err := block.NewBlock(nil, []*block.Transaction{t}, []ecdsa.PublicKey{key.PublicKey})
-	if err != nil {
-		log.Fatal(err)
-	}
+	blk := block.NewBlock(nil, []*block.Transaction{t})
 	err = d.Write(blk)
 	if err != nil {
 		log.Fatal(err)

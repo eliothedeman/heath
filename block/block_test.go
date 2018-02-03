@@ -1,8 +1,11 @@
-package block
+package block_test
 
 import (
 	"log"
 	"testing"
+
+	"github.com/eliothedeman/heath/block"
+	. "github.com/eliothedeman/heath/block/test_util"
 )
 
 func init() {
@@ -10,13 +13,10 @@ func init() {
 }
 
 func TestBlockValid(t *testing.T) {
-	a, b := GenKeys(10)
-	x := GenTestTransactions(a, 10)
+	a, _ := GenKeys(t, 10)
+	x := GenTestTransactions(t, a, 10)
 
-	y, err := NewBlock(nil, x, b)
-	if err != nil {
-		t.Error(err)
-	}
+	y := block.NewBlock(nil, x)
 
 	if y == nil {
 		t.Fail()

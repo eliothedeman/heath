@@ -11,6 +11,7 @@ import (
 	"testing"
 
 	"github.com/eliothedeman/heath/block"
+	"github.com/eliothedeman/heath/block/test_util"
 	"github.com/spf13/afero"
 )
 
@@ -34,7 +35,7 @@ func TestDriverWrite(t *testing.T) {
 			f, close := newTestFile(name)
 			defer close()
 			d := df(f)
-			b := block.GenTestBlock(3, 10, nil)
+			b := test_util.GenTestBlock(t, 3, 10, nil)
 
 			err := d.Write(b)
 			if err != nil {
@@ -75,9 +76,9 @@ func TestDriversRead(t *testing.T) {
 			d := df(f)
 
 			var b *block.Block
-			b = block.GenTestBlock(1, 2, nil)
+			b = test_util.GenTestBlock(t, 1, 2, nil)
 			for i := 0; i < 100; i++ {
-				b = block.GenTestBlock(1, 2, b)
+				b = test_util.GenTestBlock(t, 1, 2, b)
 				err := d.Write(b)
 				if err != nil {
 					t.Error(err)
