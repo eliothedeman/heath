@@ -10,7 +10,7 @@ import (
 
 // RegisterAPI sets up all the api methods on this router
 func RegisterAPI(r gin.IRouter) {
-	r.GET("block", getBlock)
+	r.GET("block/:hash", getBlock)
 }
 
 // NewEngine register all context objects
