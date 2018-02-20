@@ -5,32 +5,50 @@ import (
 	"github.com/gopherjs/vecty/elem"
 )
 
-// TextBox lets you enter text
-type TextBox struct {
+type header struct {
 	vecty.Core
-	text string
 }
 
-func (t *TextBox) Render() vecty.ComponentOrHTML {
+func (*header) Render() vecty.ComponentOrHTML {
+	return nil
+}
+
+type footer struct {
+	vecty.Core
+}
+
+func (*footer) Render() vecty.ComponentOrHTML {
+	return nil
+}
+
+type app struct {
+	vecty.Core
+	header
+	current renderer
+	footer
+}
+
+type renderer interface {
+	Render() vecty.ComponentOrHTML
+}
+
+func (a *app) Render() vecty.ComponentOrHTML {
 	return elem.Body(
-		elem.Div(
-			vecty.Markup(
-				vecty.Style("float", "right"),
-			),
-			elem.TextArea(
-				vecty.Markup(
-					vecty.Style("font-family", "monspace"),
-					vecty.Property("rows", 14),
-					vecty.Property("cols", 70),
-				),
-				vecty.Text(t.text),
-			),
-		),
+		a.header.Render(),
+		a.current.Render(),
+		a.footer.Render(),
 	)
 }
 
+type empty struct{}
+
+func (*empty) Render() vecty.ComponentOrHTML {
+	return nil
+}
+
 func Make() vecty.Component {
-	return &TextBox{
-		text: "hello",
+	a := &app{
+		current: &settings{},
 	}
+	return a
 }
